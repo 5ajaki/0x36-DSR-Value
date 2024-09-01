@@ -3,6 +3,10 @@ import { ethers } from "ethers";
 
 export async function GET() {
   try {
+    if (!process.env.INFURA_PROJECT_ID) {
+      throw new Error("INFURA_PROJECT_ID is not set");
+    }
+
     const provider = new ethers.providers.JsonRpcProvider(
       `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     );
@@ -24,8 +28,9 @@ export async function GET() {
 
     return NextResponse.json({ daiValue });
   } catch (error) {
+    console.error("Error in GET /api/calculate:", error);
     return NextResponse.json(
-      { error: "An error occurred while calculating" },
+      { error: "An error occurred while calculating. Please try again later." },
       { status: 500 }
     );
   }
